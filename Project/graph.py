@@ -1,16 +1,16 @@
-import ver2 as wd
+import webscraper as ws
 import plotly.graph_objects as go
 import plotly.express as px
 
-webinfo = wd.all_webinfo
+webinfo = ws.all_webinfo
 
 
 def update_webinfo(keywords: list[str]):
     """ Updates webinfo variable
 
     """
-    for website in wd.websites:
-        wd.site_information(website, keywords)
+    for website in ws.websites:
+        ws.site_information(website, keywords)
 
 
 def format_dict_to_parallel_lists(data: dict[str, float]) -> tuple[list[str], list[float]]:
@@ -31,7 +31,7 @@ def display_percentage_bar_graph(keywords: list[str]):
 
     """
     update_webinfo(keywords)
-    data = wd.find_percentage(wd.find_related(webinfo, keywords), keywords)
+    data = ws.find_percentage(ws.find_related(webinfo, keywords), keywords)
     x, y = format_dict_to_parallel_lists(data)
 
     fig = go.Figure([go.Bar(x=x, y=y)])
@@ -49,7 +49,7 @@ def display_searches_over_time(keywords: list[str]):
         in terms of google searches
 
     """
-    data = wd.trends_data(keywords)
+    data = ws.trends_data(keywords)
     data = data.reset_index()
 
     fig = px.line(data,
