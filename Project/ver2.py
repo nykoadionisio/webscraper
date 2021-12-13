@@ -136,17 +136,16 @@ def find_related(websites: list[WebInfo], keywords: list[str]) -> tuple[dict[str
     return related, total
 
 
-def find_percentage(data: tuple[dict[str, int], int]) -> list[float]:
+def find_percentage(data: tuple[dict[str, int], int], keywords: list[str]) -> dict[str, float]:
     """ Find the percentage of websites with keywords to total websites and return a dictionary
      mapping the keyword to a float representing the percentage
 
     """
-    percentages = []
+    percentages = {}
     related, total = data
-
-    for keyword in related:
-        percent = (related[keyword] / total) * 100
-        percentages.append(percent)
+    for i in range(0, len(related)):
+        percent = (related[keywords[i]] / total) * 100
+        percentages[keywords[i]] = percent
 
     return percentages
 
@@ -157,7 +156,7 @@ tor_sun = Website('https://torontosun.com', 'a', 'article-card__image-link', 'se
 tor_star = Website('https://www.thestar.com', 'a', 'c-mediacard', 'p', 'text-block-container')
 national = Website('https://nationalpost.com', 'a', 'article-card__link', 'section', 'article-content__content-group')
 yahoo = Website('https://ca.news.yahoo.com', 'a', 'js-content-viewer', 'div', 'caas-body')
-
+websites = [tor_sun, tor_star, national, yahoo]
 
 all_webinfo = []
 keywords = ['covid', 'vaccine', 'pandemic']
