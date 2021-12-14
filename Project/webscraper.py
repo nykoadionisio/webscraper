@@ -57,7 +57,7 @@ WEBSITES = [TOR_SUN, TOR_STAR, NATIONAL, YAHOO]
 
 
 @dataclass()
-class ArticleInfo:
+class Article:
     """ Class containing the information taken from an article
     Instance Attributes:
         - source: the article url
@@ -154,7 +154,7 @@ def href_sites_information(domain: str, href_list: list[str],
     return all_text
 
 
-def site_information(web: Website, keywords: list[str]) -> list[ArticleInfo]:
+def site_information(web: Website, keywords: list[str]) -> list[Article]:
     """ Check for keywords on the top articles for the BBC website.
 
     Note: We will not use any doctests for this function as websites are not static and
@@ -182,16 +182,16 @@ def site_information(web: Website, keywords: list[str]) -> list[ArticleInfo]:
                     else:
                         keyword_frequency[keyword] += 1
 
-        article_info.append(ArticleInfo(source, keyword_frequency, total_words))
+        article_info.append(Article(source, keyword_frequency, total_words))
     return article_info
 
 
-def find_related(webs: list[ArticleInfo], keywords: list[str]) -> tuple[dict[str, int], int]:
+def find_related(webs: list[Article], keywords: list[str]) -> tuple[dict[str, int], int]:
     """ Find the percentage of articles with keywords to total articles and return a list of the
     percentages as a float
 
     >>> keywords = ['covid']
-    >>> web = [ArticleInfo('https://www.thestar.com/news/gta/2021/12/13/omicron-is-poised-to-overtake-delta-in-ontario-what-you-need-to-know.html', {'covid': 7}, 940)]
+    >>> web = [Article('https://www.thestar.com/news/gta/2021/12/13/omicron-is-poised-to-overtake-delta-in-ontario-what-you-need-to-know.html', {'covid': 7}, 940)]
     >>> find_related(web, keywords)
     ({'covid': 1}, 1)
 
@@ -210,7 +210,6 @@ def find_related(webs: list[ArticleInfo], keywords: list[str]) -> tuple[dict[str
                 related[keyword] += 1
 
     return related, total
-
 
 
 def find_percentage(keywords: list[str]) -> dict[str, float]:
