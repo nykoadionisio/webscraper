@@ -177,6 +177,7 @@ def find_related(webs: list[WebInfo], keywords: list[str]) -> tuple[dict[str, in
     related = {}
 
     for keyword in keywords:
+        related[keyword] = 0
         for website in webs:
             # Checking if each Webinfo contains any keywords
             if not website.keywords:
@@ -184,12 +185,7 @@ def find_related(webs: list[WebInfo], keywords: list[str]) -> tuple[dict[str, in
             else:
                 if keyword in website.keywords:
                     total += 1
-                    # Adding the keyword to a dictionary or adding 1
-                    # if it is already in the dictionary
-                    if keyword not in related:
-                        related[keyword] = 1
-                    else:
-                        related[keyword] += 1
+                    related[keyword] += 1
 
     return related, total
 
