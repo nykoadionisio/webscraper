@@ -1,4 +1,9 @@
-""" Webscraper done by Amelia, Henry, Darlyn, Nyko. """
+""" Webscraper Module
+
+This module contains data classes and functions to store and compute data
+from websites and articles scraped by the Beautiful Soup library
+
+This file is Copyright (c) 2021 Amelia, Henry, Darlyn, Nyko. """
 
 from dataclasses import dataclass
 from bs4 import BeautifulSoup
@@ -9,7 +14,6 @@ import python_ta
 import requests
 
 pytrends = TrendReq(hl='en-US', tz=360)
-all_webinfo = []
 
 
 @dataclass()
@@ -36,13 +40,29 @@ class Website:
     href_class_type: str
 
 
+# Website Data Class Constant Instances
+TOR_SUN = Website('https://torontosun.com', 'a', 'article-card__image-link', 'section',
+                  'article-content__content-group')
+
+TOR_STAR = Website('https://www.thestar.com', 'a',
+                   'c-mediacard', 'p', 'text-block-container')
+
+NATIONAL = Website('https://nationalpost.com', 'a',
+                   'article-card__link', 'section', 'article-content__content-group')
+
+YAHOO = Website('https://ca.news.yahoo.com', 'a',
+                'js-content-viewer', 'div', 'caas-body')
+
+WEBSITES = [TOR_SUN, TOR_STAR, NATIONAL, YAHOO]
+
+
 @dataclass()
-class WebInfo:
-    """ Class containing the information taken from a website
+class ArticleInfo:
+    """ Class containing the information taken from an article
     Instance Attributes:
-        - source: the website url
-        - keywords: a list of keywords and its frequency on the website
-        - total_words: the amount of words on a website
+        - source: the article url
+        - keywords: a list of keywords and its frequency on the article
+        - total_words: the amount of words on a article
 
     Representation Invariants:
         - source != ''
@@ -134,7 +154,7 @@ def href_sites_information(domain: str, href_list: list[str],
     return all_text
 
 
-def site_information(web: Website, keywords: list[str]) -> None:
+def site_information(web: Website, keywords: list[str]) -> list[ArticleInfo]:
     """ Check for keywords on the top articles for the BBC website.
 
     Note: We will not use any doctests for this function as websites are not static and
@@ -145,6 +165,8 @@ def site_information(web: Website, keywords: list[str]) -> None:
     info = get_information(web.url)
     hrefs = get_href(info, web.element, class_type=web.class_type)
     text = href_sites_information(web.url, hrefs, web.href_element, class_type=web.href_class_type)
+
+    article_info = []
 
     for i in range(0, len(text)):
         keyword_frequency = {}
@@ -160,16 +182,17 @@ def site_information(web: Website, keywords: list[str]) -> None:
                     else:
                         keyword_frequency[keyword] += 1
 
-        all_webinfo.append(WebInfo(source, keyword_frequency, total_words))
+        article_info.append(ArticleInfo(source, keyword_frequency, total_words))
+    return article_info
 
 
-def find_related(webs: list[WebInfo], keywords: list[str]) -> tuple[dict[str, int], int]:
+def find_related(articles: list[ArticleInfo], keywords: list[str]) -> tuple[dict[str, int], int]:
     """ Find the percentage of websites with keywords to total websites and return a list of the
     percentages as a float
 
     >>> keywords = ['covid']
-    >>> web = [WebInfo('https://www.thestar.com/news/gta/2021/12/13/omicron-is-poised-to-overtake-delta-in-ontario-what-you-need-to-know.html', {'covid': 7}, 940)]
-    >>> find_related(web, keywords)
+    >>> articles = [ArticleInfo('https://www.thestar.com/news/gta/2021/12/13/omicron-is-poised-to-overtake-delta-in-ontario-what-you-need-to-know.html', {'covid': 7}, 940)]
+    >>> find_related(articles, keywords)
     ({'covid': 1}, 1)
 
     """
@@ -177,12 +200,12 @@ def find_related(webs: list[WebInfo], keywords: list[str]) -> tuple[dict[str, in
     related = {}
 
     for keyword in keywords:
-        for website in webs:
+        for article in articles:
             # Checking if each Webinfo contains any keywords
-            if not website.keywords:
+            if not article.keywords:
                 total += 1
             else:
-                if keyword in website.keywords:
+                if keyword in article.keywords:
                     total += 1
                     # Adding the keyword to a dictionary or adding 1
                     # if it is already in the dictionary
@@ -194,7 +217,7 @@ def find_related(webs: list[WebInfo], keywords: list[str]) -> tuple[dict[str, in
     return related, total
 
 
-def find_percentage(data: tuple[dict[str, int], int], keywords: list[str]) -> dict[str, float]:
+def find_percentage(keywords: list[str]) -> dict[str, float]:
     """ Find the percentage of websites with keywords to total websites and return a dictionary
      mapping the keyword to a float representing the percentage
 
@@ -203,29 +226,18 @@ def find_percentage(data: tuple[dict[str, int], int], keywords: list[str]) -> di
     >>> find_percentage(data, keywords)
     {'covid': 40.0}
     """
+    article_info = []
+    for website in WEBSITES:
+        article_info.extend(site_information(website, keywords))
+
     percentages = {}
-    related, total = data
+
+    related, total = find_related(article_info, keywords)
     for i in range(0, len(related)):
         percent = (related[keywords[i]] / total) * 100
         percentages[keywords[i]] = percent
 
     return percentages
-
-
-# Website Data Class Variables
-tor_sun = Website('https://torontosun.com', 'a', 'article-card__image-link', 'section',
-                  'article-content__content-group')
-
-tor_star = Website('https://www.thestar.com', 'a',
-                   'c-mediacard', 'p', 'text-block-container')
-
-national = Website('https://nationalpost.com', 'a',
-                   'article-card__link', 'section', 'article-content__content-group')
-
-yahoo = Website('https://ca.news.yahoo.com', 'a',
-                'js-content-viewer', 'div', 'caas-body')
-
-websites = [tor_sun, tor_star, national, yahoo]
 
 
 if __name__ == '__main__':

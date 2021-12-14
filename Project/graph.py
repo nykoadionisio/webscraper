@@ -1,20 +1,15 @@
-"""Graphing code done by Amelia, Henry, Darlyn, Nyko. """
+"""Graph Module
+
+This module contains functions that displays data from the Webscraper Module
+in the form of charts, using the Plotly library.
+
+This file is Copyright (c) 2021 Amelia, Henry, Darlyn, Nyko.
+ """
 import python_ta
 
 import plotly.express as px
 import plotly.graph_objects as go
 import webscraper as ws
-
-
-webinfo = ws.all_webinfo
-
-
-def update_webinfo(keywords: list[str]) -> None:
-    """ Updates webinfo variable
-
-    """
-    for website in ws.websites:
-        ws.site_information(website, keywords)
 
 
 def format_dict_to_parallel_lists(data: dict) -> tuple[list, list]:
@@ -39,8 +34,7 @@ def display_percentage_bar_graph(keywords: list[str]) -> None:
        Preconditions:
         - keywords != []
     """
-    update_webinfo(keywords)
-    data = ws.find_percentage(ws.find_related(webinfo, keywords), keywords)
+    data = ws.find_percentage(keywords)
     x, y = format_dict_to_parallel_lists(data)
 
     fig = go.Figure([go.Bar(x=x, y=y)])

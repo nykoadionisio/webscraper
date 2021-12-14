@@ -1,6 +1,9 @@
-""" Main code done by Amelia, Henry, Darlyn, Nyko. """
-import python_ta
+""" Main Module
 
+This module calls functions from Webscraper Module and Graph Module on user input
+
+This file is Copyright (c) 2021 Amelia, Henry, Darlyn, Nyko.
+"""
 import webscraper as ws
 import graph as g
 
@@ -45,16 +48,28 @@ def get_min(word_list: list[str]) -> None:
               + " was: " + str(current_min) + ' on ' + min_date)
 
 
+def clean_input(input: str) -> list[str]:
+    """Returns a list of each word separated by commas in input
+
+    >>> clean_input('cat, dog')
+    ['cat', 'dog']
+    """
+    input = input.replace(" ", "")
+    input = input.replace("_", " ")
+    input = input.split(',')
+
+    return input
+
+
 # Main loop
 run = True
-while run is True:
-    inputs = input("Rules: \n"
+while run:
+
+    inputs = input("Instructions: \n"
                    "If you wish to enter more than one word, separate each word with a comma \n"
                    "If there is a space in your word, use a '_' instead of the space. \n"
                    "Enter your keywords: ")
-    cleaned_once = inputs.replace(" ", "")
-    cleaned_twice = inputs.replace("_", " ")
-    keywords = cleaned_twice.split(',')
+    keywords = clean_input(inputs)
 
     # Display the graphs
     g.display_percentage_bar_graph(keywords)
@@ -69,16 +84,3 @@ while run is True:
     power = input("Input new words?(y/n): ")
     if power == 'n':
         run = False
-
-if __name__ == '__main__':
-    python_ta.check_all(config={
-        'extra-imports': ['webscraper', 'graph'],  # the names (strs) of imported modules
-        'allowed-io': ['get_max',
-                       'get_min'],  # the names (strs) of functions that call print/open/input
-        'max-line-length': 100,
-        'disable': ['R1705', 'C0200', 'E9997']
-    })
-
-    import doctest
-
-    doctest.testmod()
