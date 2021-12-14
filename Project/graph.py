@@ -1,11 +1,15 @@
-import webscraper as ws
-import plotly.graph_objects as go
+"""Graphing code done by Amelia, Henry, Darlyn, Nyko. """
+import python_ta
+
 import plotly.express as px
+import plotly.graph_objects as go
+import webscraper as ws
+
 
 webinfo = ws.all_webinfo
 
 
-def update_webinfo(keywords: list[str]):
+def update_webinfo(keywords: list[str]) -> None:
     """ Updates webinfo variable
 
     """
@@ -29,7 +33,7 @@ def format_dict_to_parallel_lists(data: dict) -> tuple[list, list]:
     return lst1, lst2
 
 
-def display_percentage_bar_graph(keywords: list[str]):
+def display_percentage_bar_graph(keywords: list[str]) -> None:
     """ Displays a bar graph displaying the frequency percentage of each keyword in keywords
 
        Preconditions:
@@ -49,7 +53,7 @@ def display_percentage_bar_graph(keywords: list[str]):
     fig.show()
 
 
-def display_searches_over_time(keywords: list[str]):
+def display_searches_over_time(keywords: list[str]) -> None:
     """ Displays a time-series graph displaying the interest of each keyword in keywords
         in terms of google searches
 
@@ -61,7 +65,7 @@ def display_searches_over_time(keywords: list[str]):
 
     fig = px.line(data,
                   x='date',
-                  y=[keyword for keyword in keywords],
+                  y=list(keywords),
                   title='Keyword Search Interest Over Time',
                   labels={
                       'date': 'Date',
@@ -69,3 +73,17 @@ def display_searches_over_time(keywords: list[str]):
                       'variable': 'Keyword'
                   })
     fig.show()
+
+
+if __name__ == '__main__':
+    python_ta.check_all(config={
+        'extra-imports': ['webscraper', 'plotly.graph_objects',
+                          'plotly.express'],  # the names (strs) of imported modules
+        'allowed-io': [],     # the names (strs) of functions that call print/open/input
+        'max-line-length': 100,
+        'disable': ['R1705', 'C0200', 'E9997']
+    })
+
+    import doctest
+
+    doctest.testmod()
