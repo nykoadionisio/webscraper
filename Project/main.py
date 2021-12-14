@@ -14,15 +14,15 @@ def get_max(word_list: list[str]) -> None:
     data = ws.trends_data(word_list)
     maxes = []
 
-    for i in range(len(word_list)):
+    for word in word_list:
         current_max = 0
         max_date = ''
-        for date in data[word_list[i]].keys():
-            if data[word_list[i]][date] >= current_max:
-                current_max = data[word_list[i]][date]
+        for date in data[word].keys():
+            if data[word][date] >= current_max:
+                current_max = data[word][date]
                 max_date = str(date)
         maxes.append((max_date, current_max))
-        print("Latest peak popularity for " + word_list[i]
+        print("Latest peak popularity for " + word
               + " was: " + str(current_max) + ' on ' + max_date)
 
 
@@ -33,15 +33,15 @@ def get_min(word_list: list[str]) -> None:
     """
     data = ws.trends_data(word_list)
     mins = []
-    for i in range(len(word_list)):
+    for word in word_list:
         current_min = 101
         min_date = ''
-        for date in data[word_list[i]].keys():
-            if data[word_list[i]][date] <= current_min:
-                current_min = data[word_list[i]][date]
+        for date in data[word].keys():
+            if data[word][date] <= current_min:
+                current_min = data[word][date]
                 min_date = str(date)
         mins.append((min_date, current_min))
-        print("Latest minimum popularity for " + word_list[i]
+        print("Latest minimum popularity for " + word
               + " was: " + str(current_min) + ' on ' + min_date)
 
 
@@ -70,10 +70,15 @@ while run is True:
     if power == 'n':
         run = False
 
-python_ta.check_all(config={
-    'extra-imports': ['webscraper.py', 'graph.py'],  # the names (strs) of imported modules
-    'allowed-io': ['get_max()',
-                   'get_min()'],  # the names (strs) of functions that call print/open/input
-    'max-line-length': 100,
-    'disable': ['R1705', 'C0200', 'E9997']
-})
+if __name__ == '__main__':
+    python_ta.check_all(config={
+        'extra-imports': ['webscraper', 'graph'],  # the names (strs) of imported modules
+        'allowed-io': ['get_max',
+                       'get_min'],  # the names (strs) of functions that call print/open/input
+        'max-line-length': 100,
+        'disable': ['R1705', 'C0200', 'E9997']
+    })
+
+    import doctest
+
+    doctest.testmod()
