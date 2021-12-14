@@ -186,13 +186,13 @@ def site_information(web: Website, keywords: list[str]) -> list[ArticleInfo]:
     return article_info
 
 
-def find_related(articles: list[ArticleInfo], keywords: list[str]) -> tuple[dict[str, int], int]:
-    """ Find the percentage of websites with keywords to total websites and return a list of the
+def find_related(webs: list[ArticleInfo], keywords: list[str]) -> tuple[dict[str, int], int]:
+    """ Find the percentage of articles with keywords to total articles and return a list of the
     percentages as a float
 
     >>> keywords = ['covid']
-    >>> articles = [ArticleInfo('https://www.thestar.com/news/gta/2021/12/13/omicron-is-poised-to-overtake-delta-in-ontario-what-you-need-to-know.html', {'covid': 7}, 940)]
-    >>> find_related(articles, keywords)
+    >>> web = [ArticleInfo('https://www.thestar.com/news/gta/2021/12/13/omicron-is-poised-to-overtake-delta-in-ontario-what-you-need-to-know.html', {'covid': 7}, 940)]
+    >>> find_related(web, keywords)
     ({'covid': 1}, 1)
 
     """
@@ -200,25 +200,21 @@ def find_related(articles: list[ArticleInfo], keywords: list[str]) -> tuple[dict
     related = {}
 
     for keyword in keywords:
-        for article in articles:
+        related[keyword] = 0
+        for website in webs:
             # Checking if each Webinfo contains any keywords
-            if not article.keywords:
+            if not website.keywords:
                 total += 1
-            else:
-                if keyword in article.keywords:
-                    total += 1
-                    # Adding the keyword to a dictionary or adding 1
-                    # if it is already in the dictionary
-                    if keyword not in related:
-                        related[keyword] = 1
-                    else:
-                        related[keyword] += 1
+            elif keyword in website.keywords:
+                total += 1
+                related[keyword] += 1
 
     return related, total
 
 
+
 def find_percentage(keywords: list[str]) -> dict[str, float]:
-    """ Find the percentage of websites with keywords to total websites and return a dictionary
+    """ Find the percentage of articles with keywords to total articles and return a dictionary
      mapping the keyword to a float representing the percentage
 
     >>> keywords = ['covid']
