@@ -13,9 +13,12 @@ def update_webinfo(keywords: list[str]):
         ws.site_information(website, keywords)
 
 
-def format_dict_to_parallel_lists(data: dict[str, float]) -> tuple[list[str], list[float]]:
-    """ Converts a dictionary to two parallel lists
+def format_dict_to_parallel_lists(data: dict) -> tuple[list, list]:
+    """ Converts a dictionary to a tuple of two parallel lists
 
+    >>> d = {'Hello': 1, 'World!': 2}
+    >>> format_dict_to_parallel_lists(d)
+    (['Hello', 'World!'], [1, 2])
     """
     lst1 = []
     lst2 = []
@@ -29,6 +32,8 @@ def format_dict_to_parallel_lists(data: dict[str, float]) -> tuple[list[str], li
 def display_percentage_bar_graph(keywords: list[str]):
     """ Displays a bar graph displaying the frequency percentage of each keyword in keywords
 
+       Preconditions:
+        - keywords != []
     """
     update_webinfo(keywords)
     data = ws.find_percentage(ws.find_related(webinfo, keywords), keywords)
@@ -48,6 +53,8 @@ def display_searches_over_time(keywords: list[str]):
     """ Displays a time-series graph displaying the interest of each keyword in keywords
         in terms of google searches
 
+    Preconditions:
+        - keywords != []
     """
     data = ws.trends_data(keywords)
     data = data.reset_index()
